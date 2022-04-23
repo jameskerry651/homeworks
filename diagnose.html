@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预约就诊</title>
+    <link rel="stylesheet" type="text/css" href="./css/diagnose_2.css">
+    
+</head>
+<body>
+   <!-- <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+   <div class="select_box">
+      <select class="choose" id="first" onChange="change()">
+         <option selected="selected">内科</option>
+         
+         <option>外科</option>
+         <option>儿科</option>
+         <option>妇产科</option>
+         <option>中医科</option>
+         <option>五官科</option>
+      </select>
+       
+      <select class="choose" id="second">
+         
+         <option selected="selected">分泌内科</option>
+         <option>分泌内科</option>
+         <option>心血管内科</option>
+         <option>消化内科</option>
+         <option>呼吸与危重症医学科</option>
+         <option>肾内科</option>
+         <option>血液内科</option>
+         <option>神经内科</option>
+         <option>过敏反应科</option>
+      </select>
+       
+     <button name="search_btn" onclick="search()">点击查询</button>
+
+   </div>
+
+   <div class="weekday-box">
+      <div class="nowaday-card">
+
+      </div>
+      <div class="nowaday-card">
+
+      </div>
+      <div class="nowaday-card">
+
+      </div>
+      <div class="nowaday-card">
+
+      </div>
+      <div class="nowaday-card">
+
+      </div>
+
+   </div>
+
+   <div class="schedule">
+      <div class="time_box" id="day1">
+
+      </div>
+      <div class="time_box"></div>
+      <div class="time_box"></div>
+      <div class="time_box"></div>
+      <div class="time_box"></div>
+   </div>
+    
+   <script >
+   function search() {
+      
+      var option_selected = document.getElementById('second');
+
+      var selected_info = option_selected.options[option_selected.selectedIndex].text;
+      console.log(selected_info);
+      /**
+       *to post selected info  
+       * 
+       **/
+   }
+
+    function change()
+    {
+      var x = document.getElementById("first");
+      var y = document.getElementById("second");
+      y.options.length = 0; // 清除second下拉框的所有内容
+
+      const data = "https://raw.githubusercontent.com/jameskerry651/bus_data/main/diagnose.json";
+      
+      function request_get() {
+      var httpRequest = new XMLHttpRequest();	// 第一步：建立所需的对象
+      httpRequest.open('GET', data, true);	// 第二步：打开连接，将请求参数写在url中
+      httpRequest.send();	// 第三步：发送请求，将请求参数写在URL中
+      // 获取数据后的处理程序
+      httpRequest.onreadystatechange = function() {
+         if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+               var json = httpRequest.responseText; //获取到json字符串，还需解析
+               json = JSON.parse(json);
+               
+
+               for(count=0;count<json.length;count++){
+                  if(x.selectedIndex == count) {
+                  arr = json.map((item)=> {if(item.name == x.options[x.selectedIndex].value)
+                     {return item.cl;} else {return null}})
+                  
+
+                  for(i=0;i<arr.length;i++)
+                  {
+                     if(arr[i] != null){
+                        for(j=0;j<arr[i].length;j++) {
+                           y.options.add(new Option(arr[i][j], j));
+                        }
+                     }
+                     
+                  }
+                  
+               }
+
+
+               }
+               
+        }
+        
+    };
+}
+
+request_get();
+    
+}
+
+
+function init() {
+   var arr = document.querySelectorAll(".nowaday-card");
+   console.log("------------");
+   // node.innerText = new text;
+   var date = new Date();
+   var mon = date.getMonth();
+
+   for(var i=0;i<arr.length;i++) {
+      var today = date.getDate() + i+ 1;
+      arr[i].innerText = mon.toString() + "月" + today.toString() + "日";
+   }
+
+   var time_box =  document.getElementById("day1");
+   var person_card = document.createElement("div");
+   person_card.className = "person_card";
+   
+   time_box.appendChild(person_card);
+
+   var img_card = document.createElement("img");
+   img_card.id = "img_card";
+   img_card.src = "https://www.runoob.com/images/pulpit.jpg";
+
+   var name_card = document.createElement("div");
+   name_card.id = "name";
+   name_card.innerText = "李华";
+
+
+   var position_card = document.createElement("div");
+   position_card.id = "position";
+   position_card.innerText = "主治医师";
+
+
+   var des_card = document.createElement("div")
+   des_card.id = "des";
+   des_card.innerText = "毕业于北京大学,xxxxxxxxxxxxxxxxxxxxx";
+
+   var postion_time = document.createElement("div")
+   postion_time.id = "position_t";
+   postion_time.innerText = "9:00 - 10:00";
+
+
+   // 将子元素全部添加到person_card
+   person_card.append(img_card);
+   person_card.append(name_card);
+   person_card.append(position_card);
+   person_card.append(postion_time);
+   person_card.append(des_card);
+   
+   person_card.onclick = function () {
+
+      console.log("-----");
+      // 弹出预约选项 
+      var r = confirm("是否预约？");
+      if (r == true) {
+         // 预约操作
+         x = "您按了确认！";
+      } else {
+         x = "您按了取消！";
+      }
+   }
+}
+init();
+
+</script>
+     
+</body>
+</html>
