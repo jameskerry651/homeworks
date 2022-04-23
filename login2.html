@@ -32,11 +32,30 @@
         function getValue() {
             var user = document.getElementById("username");
             var passwd = document.getElementById("password");
-            var arr = {'username':user, 'passwd':passwd}; 
+            var arr = {'username':user, 'passwd':passwd};
+
             var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "/login/data.html")
+            xmlhttp.setRequestHeader('content-type', 'application/json');
+            xmlhttp.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+            //根据服务器的响应内容格式处理响应结果
+            if(xhr.getResponseHeader('content-type')==='application/json'){
+	            var result = JSON.parse(xmlhttp.responseText);	
+                //根据返回结果判断验证码是否正确
+                if(result.code===1){
+                            alert('成功');
+                            window.location.assign("/login/diagnose.html");
+                }
+                    } else {
+                        console.log(xmlhttp.responseText);
+                }
+                }
+
+            }
+            xmlhttp.send(JSON.stringify(arr));
             
-            console.log(user.value);
-            window.location.assign("/login/diagnose.html")
+            
         } 
 
         var log_btn = document.getElementById("login");
